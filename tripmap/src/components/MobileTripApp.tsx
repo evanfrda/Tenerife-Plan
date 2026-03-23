@@ -11,13 +11,13 @@ import { saveTrip } from '@/lib/storage';
 // ---------------------------------------------------------------------------
 // Hero images per day number — each image matches a key spot of that day
 const DAY_HERO_IMAGES: Record<number, string> = {
-  1: 'https://images.unsplash.com/photo-1573576267585-3191e83f2280?w=1200&h=900&fit=crop&q=80', // Playa del Duque / La Caleta sunset
-  2: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=1200&h=900&fit=crop&q=80', // Teide & Roques de Garcia
-  3: 'https://images.unsplash.com/photo-1559827291-bce885509e90?w=1200&h=900&fit=crop&q=80', // Los Gigantes falaises / whale watching
-  4: 'https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1200&h=900&fit=crop&q=80', // Masca village
-  5: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=900&fit=crop&q=80', // Playa El Bollullo cote nord
-  6: 'https://images.unsplash.com/photo-1600699318462-57a9e7983ec5?w=1200&h=900&fit=crop&q=80', // Anaga foret / Benijo
-  7: 'https://images.unsplash.com/photo-1540390769625-2fc3f8b1d50c?w=1200&h=900&fit=crop&q=80', // Las Teresitas plage doree
+  1: 'https://images.unsplash.com/photo-1504681869696-d977211a5f4c?w=1200&h=900&fit=crop&q=80', // Sunset ocean / plage
+  2: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=1200&h=900&fit=crop&q=80', // Volcan / montagne
+  3: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=1200&h=900&fit=crop&q=80', // Ocean / falaises
+  4: 'https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1200&h=900&fit=crop&q=80', // Village montagne
+  5: 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054?w=1200&h=900&fit=crop&q=80', // Plage sauvage
+  6: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=1200&h=900&fit=crop&q=80', // Foret tropicale / nature
+  7: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=900&fit=crop&q=80', // Plage doree
 };
 
 // ---------------------------------------------------------------------------
