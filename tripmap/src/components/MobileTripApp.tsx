@@ -1683,9 +1683,29 @@ function EditModal({ mode, type, item, onClose, onSave }: {
   const [cuisine, setCuisine] = useState((existing as Restaurant)?.cuisine || '');
   const [priceRange, setPriceRange] = useState((existing as Restaurant)?.priceRange || '');
 
-  const handleSubmit = () => {
-    if (!name.trim()) return;
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!name.trim() || saving) return;
+    setSaving(true);
     const query = name.trim() + ' Tenerife';
+
+    // Geocode via Nominatim to get real GPS coordinates
+    let lat = (existing as Activity)?.lat || 0;
+    let lng = (existing as Activity)?.lng || 0;
+    if (lat === 0 && lng === 0) {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+        if (res.ok) {
+          const results = await res.json();
+          if (results.length > 0) {
+            lat = parseFloat(results[0].lat);
+            lng = parseFloat(results[0].lon);
+          }
+        }
+      } catch { /* fallback to 0,0 */ }
+    }
+
     if (isActivity) {
       const act: Activity = {
         id: existing?.id || crypto.randomUUID(),
@@ -1693,8 +1713,8 @@ function EditModal({ mode, type, item, onClose, onSave }: {
         period: period || 'Matin',
         name: name.trim(),
         query,
-        lat: (existing as Activity)?.lat || 0,
-        lng: (existing as Activity)?.lng || 0,
+        lat,
+        lng,
         desc: desc.trim(),
       };
       onSave(act);
@@ -1703,14 +1723,15 @@ function EditModal({ mode, type, item, onClose, onSave }: {
         id: existing?.id || crypto.randomUUID(),
         name: name.trim(),
         query,
-        lat: (existing as Restaurant)?.lat || 0,
-        lng: (existing as Restaurant)?.lng || 0,
+        lat,
+        lng,
         cuisine: cuisine.trim(),
         priceRange: priceRange.trim(),
         desc: desc.trim(),
       };
       onSave(rst);
     }
+    setSaving(false);
   };
 
   return (
@@ -1760,8 +1781,8 @@ function EditModal({ mode, type, item, onClose, onSave }: {
         </div>
         <div className="ma-modal-footer">
           <button className="ma-modal-btn ma-modal-cancel" onClick={onClose}>Annuler</button>
-          <button className="ma-modal-btn ma-modal-save" onClick={handleSubmit} disabled={!name.trim()}>
-            {mode === 'add' ? 'Ajouter' : 'Enregistrer'}
+          <button className="ma-modal-btn ma-modal-save" onClick={handleSubmit} disabled={!name.trim() || saving}>
+            {saving ? 'Recherche...' : mode === 'add' ? 'Ajouter' : 'Enregistrer'}
           </button>
         </div>
       </div>
