@@ -958,7 +958,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
       }, {})
     : {};
 
-  const periodOrder = ['Matin', 'Apres-midi', 'Soir', 'Autre'];
+  const periodOrder = ['Matin', 'Apr\u00e8s-midi', 'Apres-midi', 'Soir', 'Autre'];
   const sortedPeriods = Object.keys(groupedActivities).sort(
     (a, b) => (periodOrder.indexOf(a) === -1 ? 99 : periodOrder.indexOf(a)) -
               (periodOrder.indexOf(b) === -1 ? 99 : periodOrder.indexOf(b))
@@ -1119,9 +1119,9 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
                     <div key={period}>
                       <div className="ma-period-header">
                         {period === 'Matin' && '\u2600\uFE0F'}{' '}
-                        {period === 'Apres-midi' && '\uD83C\uDF24\uFE0F'}{' '}
+                        {(period === 'Apres-midi' || period === 'Apr\u00e8s-midi') && '\uD83C\uDF24\uFE0F'}{' '}
                         {period === 'Soir' && '\uD83C\uDF19'}{' '}
-                        {period}
+                        {period === 'Apr\u00e8s-midi' ? 'APRES-MIDI' : period.toUpperCase()}
                       </div>
                       {groupedActivities[period].map((act, i) => {
                         const place = activityPlaces[act.query];
