@@ -40,30 +40,26 @@ export default function HomePage() {
   const [trip, setTrip] = useState<Trip | null>(null);
 
   useEffect(() => {
-    async function loadTrip() {
-      const tenerifeSeed = getTenerifeTrip();
+    const tenerifeSeed = getTenerifeTrip();
 
-      // 1. Try loading from Supabase first (shared source of truth)
-      const supabaseTrip = await loadTripFromSupabase(tenerifeSeed.id);
-
-      if (supabaseTrip) {
-        // Supabase has the latest version — use it
-        saveTrip(supabaseTrip); // sync to localStorage too (no re-upload since data matches)
-        setTrip(supabaseTrip);
-        return;
-      }
-
-      // 2. Fallback: localStorage or seed
-      let t = getTrip(tenerifeSeed.id);
-      if (!t) {
-        saveTrip(tenerifeSeed); // saves to both localStorage + Supabase
-        t = tenerifeSeed;
-      }
-
-      setTrip(t);
+    // 1. Load immediately from localStorage or seed (instant)
+    let t = getTrip(tenerifeSeed.id);
+    if (!t) {
+      t = tenerifeSeed;
+      saveTrip(t);
     }
+    setTrip(t);
 
-    loadTrip();
+    // 2. Then try Supabase in background (shared data)
+    loadTripFromSupabase(tenerifeSeed.id).then((supabaseTrip) => {
+      if (supabaseTrip) {
+        // Supabase has newer data — update
+        saveTrip(supabaseTrip);
+        setTrip(supabaseTrip);
+      }
+    }).catch(() => {
+      // Supabase unavailable — localStorage is fine
+    });
   }, []);
 
   if (!trip) return null;
