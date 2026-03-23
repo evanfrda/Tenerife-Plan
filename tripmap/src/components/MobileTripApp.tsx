@@ -71,7 +71,7 @@ const STAY_PERIODS: StayPeriod[] = [
   },
 ];
 
-function getHeroImage(dayNumber: number): string {
+function getHeroImageFallback(dayNumber: number): string {
   return DAY_HERO_IMAGES[dayNumber] || DAY_HERO_IMAGES[1]; // fallback
 }
 
@@ -1040,7 +1040,13 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
             <div className="ma-hero">
               <div
                 className="ma-hero-image"
-                style={{ backgroundImage: `url(${getHeroImage(currentDay.dayNumber)})` }}
+                style={{ backgroundImage: `url(${(() => {
+                  // Use first Google Places photo from today's activities as hero
+                  const firstPhoto = currentDay.activities
+                    .map(a => activityPlaces[a.query]?.photoUrls?.[0])
+                    .find(Boolean);
+                  return firstPhoto || getHeroImageFallback(currentDay.dayNumber);
+                })()})` }}
               />
               <div className="ma-hero-content">
                 <div className="ma-hero-day-counter">Jour {activeDay}</div>
