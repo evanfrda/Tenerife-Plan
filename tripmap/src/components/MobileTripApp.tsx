@@ -1695,20 +1695,51 @@ function EditModal({ mode, type, item, onClose, onSave }: {
     setSaving(true);
     const query = name.trim() + ' Tenerife';
 
-    // Geocode via Nominatim to get real GPS coordinates
+    // Geocode to get real GPS coordinates
     let lat = (existing as Activity)?.lat || 0;
     let lng = (existing as Activity)?.lng || 0;
     if (lat === 0 && lng === 0) {
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
-        if (res.ok) {
-          const results = await res.json();
-          if (results.length > 0) {
-            lat = parseFloat(results[0].lat);
-            lng = parseFloat(results[0].lon);
+      // Try Nominatim with multiple query variants
+      const queries = [query, name.trim()];
+      for (const q of queries) {
+        if (lat !== 0 || lng !== 0) break;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=es`,
+            { headers: { 'User-Agent': 'TripMap/1.0' } }
+          );
+          if (res.ok) {
+            const results = await res.json();
+            if (results.length > 0) {
+              lat = parseFloat(results[0].lat);
+              lng = parseFloat(results[0].lon);
+            }
           }
-        }
-      } catch { /* fallback to 0,0 */ }
+        } catch { /* try next */ }
+      }
+      // Fallback: use Google Places API via our backend
+      if (lat === 0 && lng === 0) {
+        try {
+          const res = await fetch(`/api/places?query=${encodeURIComponent(query)}`);
+          if (res.ok) {
+            const place = await res.json();
+            // Google Places doesn't return lat/lng directly, but we can use Nominatim with the formatted address
+            if (place.formattedAddress) {
+              const geoRes = await fetch(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(place.formattedAddress)}&format=json&limit=1`,
+                { headers: { 'User-Agent': 'TripMap/1.0' } }
+              );
+              if (geoRes.ok) {
+                const geoResults = await geoRes.json();
+                if (geoResults.length > 0) {
+                  lat = parseFloat(geoResults[0].lat);
+                  lng = parseFloat(geoResults[0].lon);
+                }
+              }
+            }
+          }
+        } catch { /* give up */ }
+      }
     }
 
     if (isActivity) {
