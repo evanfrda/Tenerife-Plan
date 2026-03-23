@@ -102,6 +102,7 @@ export default function NewTripPage() {
           const timeMatch = line.match(/^(\d{1,2}[h:]\d{0,2})\s*[-:]?\s*(.*)/i);
           if (timeMatch) {
             generated[currentDay].activities.push({
+              id: crypto.randomUUID(),
               time: timeMatch[1].replace('h', ':').replace(/:$/, ':00'),
               period: '',
               name: timeMatch[2] || '',
@@ -134,7 +135,7 @@ export default function NewTripPage() {
         ...updated[dayIndex],
         activities: [
           ...updated[dayIndex].activities,
-          { time: '', period: '', name: '', query: '', lat: 0, lng: 0, desc: '' },
+          { id: crypto.randomUUID(), time: '', period: '', name: '', query: '', lat: 0, lng: 0, desc: '' },
         ],
       };
       return updated;

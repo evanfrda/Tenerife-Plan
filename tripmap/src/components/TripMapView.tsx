@@ -638,6 +638,7 @@ export default function TripMapView({ trip: initialTrip }: TripMapViewProps) {
     const [h] = addTime.split(':').map(Number);
     const period = h < 12 ? 'Matin' : h < 17 ? 'Apres-midi' : 'Soir';
     const newActivity: Activity = {
+      id: crypto.randomUUID(),
       time: addTime,
       period,
       name: pendingAdd.name,
@@ -718,7 +719,7 @@ export default function TripMapView({ trip: initialTrip }: TripMapViewProps) {
         fetchPlaceData(rest.query).then((place) => {
           if (place) {
             const pseudoActivity: Activity = {
-              time: '',
+              id: '', time: '',
               period: '',
               name: rest.name,
               query: rest.query,

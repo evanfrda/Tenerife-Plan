@@ -7,7 +7,8 @@ function genId(prefix: string): string {
 
 export function getTenerifeTrip(): Trip {
   idCounter = 0;
-  const trip: Trip = {
+  // Activities/restaurants get IDs assigned at the end of this function
+  const trip = {
     id: 'tenerife-2026',
     name: 'Tenerife',
     country: 'Espagne (Canaries)',
@@ -256,15 +257,15 @@ export function getTenerifeTrip(): Trip {
   };
 
   // Auto-assign IDs to all activities and restaurants
-  for (const day of trip.days) {
-    day.activities = day.activities.map(a => ({ ...a, id: a.id || genId('act') }));
+  for (const day of (trip as any).days) { // eslint-disable-line
+    day.activities = day.activities.map((a: any) => ({ ...a, id: a.id || genId('act') }));
     if (day.restaurants) {
-      day.restaurants = day.restaurants.map(r => ({ ...r, id: r.id || genId('rst') }));
+      day.restaurants = day.restaurants.map((r: any) => ({ ...r, id: r.id || genId('rst') }));
     }
     if (day.tabelogRestaurants) {
-      day.tabelogRestaurants = day.tabelogRestaurants.map(r => ({ ...r, id: r.id || genId('trst') }));
+      day.tabelogRestaurants = day.tabelogRestaurants.map((r: any) => ({ ...r, id: r.id || genId('trst') }));
     }
   }
 
-  return trip;
+  return trip as Trip;
 }

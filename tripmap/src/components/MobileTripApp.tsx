@@ -668,7 +668,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
             fetchPlaceData(rest.query).then(place => {
               if (place) {
                 const pseudoActivity: Activity = {
-                  time: '', period: '', name: rest.name,
+                  id: '', time: '', period: '', name: rest.name,
                   query: rest.query, lat: rest.lat, lng: rest.lng, desc: rest.desc,
                 };
                 setCurrentPhotoIdx(0);
@@ -803,7 +803,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
       fetchPlaceData(rest.query).then(place => {
         if (place) {
           const pseudoActivity: Activity = {
-            time: '',
+            id: '', time: '',
             period: '',
             name: rest.name,
             query: rest.query,
@@ -1420,7 +1420,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
                           if (cached) {
                             setCurrentPhotoIdx(0);
                             setPlaceDetail({
-                              activity: { time: '', period: '', name: spot.name, query: spot.query, lat: 0, lng: 0, desc: spot.desc },
+                              activity: { id: '', time: '', period: '', name: spot.name, query: spot.query, lat: 0, lng: 0, desc: spot.desc },
                               place: cached,
                             });
                           } else {
@@ -1429,7 +1429,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
                                 setAePlaces(prev => ({ ...prev, [spot.query]: p }));
                                 setCurrentPhotoIdx(0);
                                 setPlaceDetail({
-                                  activity: { time: '', period: '', name: spot.name, query: spot.query, lat: 0, lng: 0, desc: spot.desc },
+                                  activity: { id: '', time: '', period: '', name: spot.name, query: spot.query, lat: 0, lng: 0, desc: spot.desc },
                                   place: p,
                                 });
                               }
