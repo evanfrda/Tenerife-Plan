@@ -920,6 +920,17 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ---- Refresh map markers when trip data changes (add/edit/delete) ----
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const day = trip.days.find(d => d.dayNumber === activeDay);
+    if (day) {
+      addDayMarkers(day);
+      drawDayRoute(day);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trip]);
+
   // ---- Load AE places when tab is opened ----
   const aeLoadedRef = useRef(false);
   useEffect(() => {
