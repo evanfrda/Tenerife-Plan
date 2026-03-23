@@ -11,13 +11,13 @@ import { saveTrip } from '@/lib/storage';
 // ---------------------------------------------------------------------------
 // Hero images per day number — each image matches a key spot of that day
 const DAY_HERO_IMAGES: Record<number, string> = {
-  1: 'https://images.unsplash.com/photo-1504681869696-d977211a5f4c?w=1200&h=900&fit=crop&q=80', // Sunset ocean / plage
-  2: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=1200&h=900&fit=crop&q=80', // Volcan / montagne
-  3: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=1200&h=900&fit=crop&q=80', // Ocean / falaises
-  4: 'https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1200&h=900&fit=crop&q=80', // Village montagne
-  5: 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054?w=1200&h=900&fit=crop&q=80', // Plage sauvage
-  6: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=1200&h=900&fit=crop&q=80', // Foret tropicale / nature
-  7: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=900&fit=crop&q=80', // Plage doree
+  1: 'https://adventoure.com/cms/uploads/Schermata_2023_05_15_alle_15.16.35.png', // Costa Adeje / La Caleta
+  2: 'https://generationvoyage.fr/activites/_next/image/?url=https%3A%2F%2Fcdn.generationvoyage.fr%2F2025%2F05%2FLe-Volcan-Teide-a-Tenerife-Espagne.jpeg&w=1920&q=90', // Teide
+  3: 'https://www.salutilescanaries.com/sites/default/files/styles/masonry_image/public/resources/resource_image/Galeria-Diego-Hernandez-01.jpg?itok=i-tW6SOQ', // Playa Diego Hernandez
+  4: 'https://maltetourisme.fr/wp-content/uploads/2025/07/Punta-Teno-Tenerife.jpg', // Punta de Teno
+  5: 'https://blog.volcanoteide.com/hubfs/Blog/Qu%C3%A9%20ver%20en%20Puerto%20de%20la%20Cruz/ES/que-ver-puerto-de-la-cruz.webp', // Puerto de la Cruz / cote nord
+  6: 'https://aebc975c.delivery.rocketcdn.me/wp-content/uploads/2021/11/iStock-1205565699-1.jpg.webp', // Anaga foret
+  7: 'https://www.barcelo.com/guia-turismo/wp-content/uploads/2024/09/ok-playa-de-las-teresitas.jpg', // Las Teresitas
 };
 
 // ---------------------------------------------------------------------------
@@ -1040,13 +1040,7 @@ export default function MobileTripApp({ trip: initialTrip }: { trip: Trip }) {
             <div className="ma-hero">
               <div
                 className="ma-hero-image"
-                style={{ backgroundImage: `url(${(() => {
-                  // Use first Google Places photo from today's activities as hero
-                  const firstPhoto = currentDay.activities
-                    .map(a => activityPlaces[a.query]?.photoUrls?.[0])
-                    .find(Boolean);
-                  return firstPhoto || getHeroImageFallback(currentDay.dayNumber);
-                })()})` }}
+                style={{ backgroundImage: `url(${getHeroImageFallback(currentDay.dayNumber)})` }}
               />
               <div className="ma-hero-content">
                 <div className="ma-hero-day-counter">Jour {activeDay}</div>
