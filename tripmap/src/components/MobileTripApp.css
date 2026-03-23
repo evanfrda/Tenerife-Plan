@@ -16,15 +16,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (min-width: 768px) {
-  .ma-app {
-    max-width: 430px;
-    margin: 0 auto;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-    border-left: 1px solid rgba(0,0,0,0.04);
-    border-right: 1px solid rgba(0,0,0,0.04);
-  }
-}
+/* Full width on all screens */
 
 /* ================================================================
    MAP (always mounted in DOM)
@@ -1267,13 +1259,7 @@
   z-index: 500;
 }
 
-@media (min-width: 768px) {
-  .ma-bottom-nav {
-    max-width: 430px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
+/* Nav full width on all screens */
 
 .ma-nav-item {
   display: flex;
