@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Trip } from '@/lib/types';
-import { getTrip, saveTrip } from '@/lib/storage';
+import { getTrip, saveTrip, loadTripFromSupabase } from '@/lib/storage';
 import { getTenerifeTrip } from '@/lib/tenerifeTripSeed';
 
 const MobileTripApp = dynamic(() => import('@/components/MobileTripApp'), {
@@ -20,7 +20,7 @@ const MobileTripApp = dynamic(() => import('@/components/MobileTripApp'), {
       <div style={{
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🇮🇨</div>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>{'\uD83C\uDDEE\uD83C\uDDE8'}</div>
         <div style={{
           width: 32,
           height: 32,
@@ -40,31 +40,30 @@ export default function HomePage() {
   const [trip, setTrip] = useState<Trip | null>(null);
 
   useEffect(() => {
-    // Load or create the Tenerife trip
-    const tenerifeSeed = getTenerifeTrip();
-    let t = getTrip(tenerifeSeed.id);
+    async function loadTrip() {
+      const tenerifeSeed = getTenerifeTrip();
 
-    if (!t) {
-      saveTrip(tenerifeSeed);
-      t = tenerifeSeed;
-    } else {
-      // Always sync destinations, restaurants and phases from seed
-      const updated = { ...t };
-      updated.destinations = tenerifeSeed.destinations;
-      updated.phases = tenerifeSeed.phases;
-      updated.days = updated.days.map((day) => {
-        const seedDay = tenerifeSeed.days.find((sd) => sd.dayNumber === day.dayNumber);
-        return {
-          ...day,
-          restaurants: seedDay?.restaurants || day.restaurants,
-          tabelogRestaurants: seedDay?.tabelogRestaurants || day.tabelogRestaurants,
-        };
-      });
-      saveTrip(updated);
-      t = updated;
+      // 1. Try loading from Supabase first (shared source of truth)
+      const supabaseTrip = await loadTripFromSupabase(tenerifeSeed.id);
+
+      if (supabaseTrip) {
+        // Supabase has the latest version — use it
+        saveTrip(supabaseTrip); // sync to localStorage too (no re-upload since data matches)
+        setTrip(supabaseTrip);
+        return;
+      }
+
+      // 2. Fallback: localStorage or seed
+      let t = getTrip(tenerifeSeed.id);
+      if (!t) {
+        saveTrip(tenerifeSeed); // saves to both localStorage + Supabase
+        t = tenerifeSeed;
+      }
+
+      setTrip(t);
     }
 
-    setTrip(t);
+    loadTrip();
   }, []);
 
   if (!trip) return null;
